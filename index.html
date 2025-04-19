@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Homegrown Map</title>
+    <title>Homegrown Map - Color Coded</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -29,7 +29,6 @@
   </head>
   <body>
     <div id="map"></div>
-
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
       const map = L.map("map").fitBounds([
@@ -41,53 +40,70 @@
         attribution: "&copy; OpenStreetMap contributors"
       }).addTo(map);
 
-      const customIcon = L.divIcon({
-        className: '',
-        html: `
-          <div style="position: relative; width: 24px; height: 36px;">
-            <svg width="24" height="36" viewBox="0 0 24 36" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 0C5.4 0 0 5.4 0 12c0 8.3 12 24 12 24s12-15.7 12-24C24 5.4 18.6 0 12 0z" fill="#8FA370"/>
-              <circle cx="12" cy="12" r="4" fill="white"/>
-            </svg>
-          </div>
-        `,
-        iconSize: [24, 36],
-        iconAnchor: [12, 36]
-      });
+      // Brand color lookup
+      const brandColors = {
+        "Switchyards": "#4B82D1",
+        "Sugarcoat": "#FF91B3",
+        "Brash": "#B6895B",
+        "PERC": "#F6C15C",
+        "JINYA": "#FF5F5F"
+      };
 
+      // Create a custom pin icon for a brand color
+      function createPinIcon(color) {
+        return L.divIcon({
+          className: '',
+          html: `
+            <div style="position: relative; width: 24px; height: 36px;">
+              <svg width="24" height="36" viewBox="0 0 24 36" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 0C5.4 0 0 5.4 0 12c0 8.3 12 24 12 24s12-15.7 12-24C24 5.4 18.6 0 12 0z" fill="${color}"/>
+                <circle cx="12" cy="12" r="4" fill="white"/>
+              </svg>
+            </div>
+          `,
+          iconSize: [24, 36],
+          iconAnchor: [12, 36]
+        });
+      }
+
+      // All store locations with their brand
       const locations = [
-        { name: "Switchyards Downtown", coords: [33.7586, -84.3900] },
-        { name: "Switchyards Midtown", coords: [33.7750, -84.3880] },
-        { name: "Switchyards Cabbagetown", coords: [33.7485, -84.3647] },
-        { name: "Switchyards Westside", coords: [33.7860, -84.4110] },
-        { name: "Sugarcoat Buckhead", coords: [33.8370, -84.3780] },
-        { name: "Sugarcoat Midtown", coords: [33.7834, -84.3851] },
-        { name: "Sugarcoat Vinings", coords: [33.8640, -84.4660] },
-        { name: "Brash The Works", coords: [33.8000, -84.4280] },
-        { name: "Brash Westside Provisions", coords: [33.7860, -84.4110] },
-        { name: "Brash Atlanta History Center", coords: [33.8420, -84.3850] },
-        { name: "Brash Beltline", coords: [33.7550, -84.3680] },
-        { name: "PERC Chastain Park", coords: [33.8840, -84.3790] },
-        { name: "PERC Tucker", coords: [33.8529, -84.2145] },
-        { name: "JINYA Buckhead", coords: [33.8496, -84.3795] },
-        { name: "JINYA Poncey-Highland", coords: [33.7739, -84.3525] },
-        { name: "JINYA Sandy Springs", coords: [33.9206, -84.3783] },
-        { name: "JINYA Kennesaw", coords: [34.0105, -84.5862] },
-        { name: "JINYA Roswell", coords: [34.0232, -84.3616] },
-        { name: "JINYA Alpharetta", coords: [34.0754, -84.2941] }
+        { name: "Switchyards Downtown", brand: "Switchyards", coords: [33.7586, -84.3900] },
+        { name: "Switchyards Midtown", brand: "Switchyards", coords: [33.7750, -84.3880] },
+        { name: "Switchyards Cabbagetown", brand: "Switchyards", coords: [33.7485, -84.3647] },
+        { name: "Switchyards Westside", brand: "Switchyards", coords: [33.7860, -84.4110] },
+
+        { name: "Sugarcoat Buckhead", brand: "Sugarcoat", coords: [33.8370, -84.3780] },
+        { name: "Sugarcoat Midtown", brand: "Sugarcoat", coords: [33.7834, -84.3851] },
+        { name: "Sugarcoat Vinings", brand: "Sugarcoat", coords: [33.8640, -84.4660] },
+
+        { name: "Brash The Works", brand: "Brash", coords: [33.8000, -84.4280] },
+        { name: "Brash Westside Provisions", brand: "Brash", coords: [33.7860, -84.4110] },
+        { name: "Brash Atlanta History Center", brand: "Brash", coords: [33.8420, -84.3850] },
+        { name: "Brash Beltline", brand: "Brash", coords: [33.7550, -84.3680] },
+
+        { name: "PERC Chastain Park", brand: "PERC", coords: [33.8840, -84.3790] },
+        { name: "PERC Tucker", brand: "PERC", coords: [33.8529, -84.2145] },
+
+        { name: "JINYA Buckhead", brand: "JINYA", coords: [33.8496, -84.3795] },
+        { name: "JINYA Poncey-Highland", brand: "JINYA", coords: [33.7739, -84.3525] },
+        { name: "JINYA Sandy Springs", brand: "JINYA", coords: [33.9206, -84.3783] },
+        { name: "JINYA Kennesaw", brand: "JINYA", coords: [34.0105, -84.5862] },
+        { name: "JINYA Roswell", brand: "JINYA", coords: [34.0232, -84.3616] },
+        { name: "JINYA Alpharetta", brand: "JINYA", coords: [34.0754, -84.2941] }
       ];
 
       const markerGroup = L.layerGroup().addTo(map);
 
       locations.forEach(loc => {
-        const marker = L.marker(loc.coords, { icon: customIcon });
+        const color = brandColors[loc.brand] || "#999999";
+        const marker = L.marker(loc.coords, { icon: createPinIcon(color) });
         markerGroup.addLayer(marker);
 
         const label = L.marker(loc.coords, {
           icon: L.divIcon({
             className: '',
-            html: `<div class="custom-label" style="transform: translate(16px, -34px);">${loc.name}</div>`,
-
+            html: `<div class="custom-label" style="transform: translate(-10px, -35px);">${loc.name}</div>`,
             iconAnchor: [0, 0],
             iconSize: null
           }),
@@ -99,4 +115,5 @@
       });
     </script>
   </body>
+</html>
 </html>
