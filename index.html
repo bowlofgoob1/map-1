@@ -20,10 +20,17 @@
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         font-family: sans-serif;
         text-align: center;
-
         white-space: nowrap;
         line-height: 1.4;
         word-break: break-word;
+      }
+
+      /* Style zoom buttons with rounded corners */
+      .leaflet-control-zoom a {
+        border-radius: 8px;
+        background: white;
+        color: #333;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
       }
     </style>
   </head>
@@ -40,7 +47,6 @@
         attribution: "&copy; OpenStreetMap contributors"
       }).addTo(map);
 
-      // Brand color lookup
       const brandColors = {
         "Switchyards": "#4B82D1",
         "Sugarcoat": "#FF91B3",
@@ -49,7 +55,6 @@
         "JINYA": "#FF5F5F"
       };
 
-      // Create a custom pin icon for a brand color
       function createPinIcon(color) {
         return L.divIcon({
           className: '',
@@ -66,7 +71,6 @@
         });
       }
 
-      // All store locations with their brand
       const locations = [
         { name: "Switchyards Downtown", brand: "Switchyards", coords: [33.7586, -84.3900] },
         { name: "Switchyards Midtown", brand: "Switchyards", coords: [33.7750, -84.3880] },
@@ -94,6 +98,7 @@
       ];
 
       const markerGroup = L.layerGroup().addTo(map);
+      const labelMarkers = [];
 
       locations.forEach(loc => {
         const color = brandColors[loc.brand] || "#999999";
@@ -111,8 +116,22 @@
           keyboard: false
         });
 
-        markerGroup.addLayer(label);
+        labelMarkers.push(label);
       });
+
+      function updateLabels() {
+        const zoom = map.getZoom();
+        labelMarkers.forEach(label => {
+          if (zoom >= 13) {
+            if (!markerGroup.hasLayer(label)) markerGroup.addLayer(label);
+          } else {
+            if (markerGroup.hasLayer(label)) markerGroup.removeLayer(label);
+          }
+        });
+      }
+
+      updateLabels();
+      map.on("zoomend", updateLabels);
     </script>
   </body>
 </html>
