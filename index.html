@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Homegrown Map - Color Coded</title>
+    <title>Homegrown Map - Unified Pins</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -11,21 +11,6 @@
         padding: 0;
       }
 
-      .custom-label {
-        background: white;
-        color: #333;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-size: 13px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-        font-family: sans-serif;
-        text-align: center;
-        white-space: nowrap;
-        line-height: 1.4;
-        word-break: break-word;
-      }
-
-      /* Style zoom buttons with rounded corners */
       .leaflet-control-zoom a {
         border-radius: 8px;
         background: white;
@@ -38,22 +23,21 @@
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-      const map = L.map("map").fitBounds([
-        [33.74, -84.60],
-        [34.08, -84.21]
+      const map = L.map("map", {
+        zoomAnimation: true,
+        zoomSnap: 0.25,
+        zoomDelta: 0.5,
+        wheelPxPerZoomLevel: 60
+      }).fitBounds([
+        [33.64, -84.60],
+        [34.10, -84.20]
       ]);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors"
       }).addTo(map);
 
-      const brandColors = {
-        "Switchyards": "#4B82D1",
-        "Sugarcoat": "#FF91B3",
-        "Brash": "#B6895B",
-        "PERC": "#F6C15C",
-        "JINYA": "#FF5F5F"
-      };
+      const pinColor = "#8FA370";
 
       function createPinIcon(color) {
         return L.divIcon({
@@ -72,68 +56,57 @@
       }
 
       const locations = [
-        { name: "Switchyards Downtown", brand: "Switchyards", coords: [33.7586, -84.3900] },
-        { name: "Switchyards Midtown", brand: "Switchyards", coords: [33.7750, -84.3880] },
-        { name: "Switchyards Cabbagetown", brand: "Switchyards", coords: [33.7485, -84.3647] },
-        { name: "Switchyards Westside", brand: "Switchyards", coords: [33.7860, -84.4110] },
+        // Switchyards
+        { name: "Switchyards Downtown", coords: [33.7586, -84.3900] },
+        { name: "Switchyards Midtown", coords: [33.7750, -84.3880] },
+        { name: "Switchyards Cabbagetown", coords: [33.7485, -84.3647] },
+        { name: "Switchyards Westside", coords: [33.7860, -84.4110] },
+        { name: "Switchyards Adair Park", coords: [33.7310, -84.4170] },
+        { name: "Switchyards Avondale Estates", coords: [33.7750, -84.2810] },
+        { name: "Switchyards Buckhead", coords: [33.8490, -84.3780] },
+        { name: "Switchyards Chamblee", coords: [33.8870, -84.3070] },
+        { name: "Switchyards Decatur", coords: [33.7650, -84.2950] },
+        { name: "Switchyards Old Fourth Ward", coords: [33.7550, -84.3650] },
+        { name: "Switchyards Roswell", coords: [34.0230, -84.3610] },
+        { name: "Switchyards Virginia-Highland", coords: [33.7760, -84.3520] },
 
-        { name: "Sugarcoat Buckhead", brand: "Sugarcoat", coords: [33.8370, -84.3780] },
-        { name: "Sugarcoat Midtown", brand: "Sugarcoat", coords: [33.7834, -84.3851] },
-        { name: "Sugarcoat Vinings", brand: "Sugarcoat", coords: [33.8640, -84.4660] },
+        // Sugarcoat
+        { name: "Sugarcoat Buckhead", coords: [33.8370, -84.3780] },
+        { name: "Sugarcoat Midtown", coords: [33.7834, -84.3851] },
+        { name: "Sugarcoat Vinings", coords: [33.8640, -84.4660] },
+        { name: "Sugarcoat Virginia-Highland", coords: [33.7760, -84.3520] },
+        { name: "Sugarcoat Chastain", coords: [33.8840, -84.3790] },
+        { name: "Sugarcoat Lenox", coords: [33.8480, -84.3620] },
+        { name: "Sugarcoat Corso Atlanta", coords: [33.8190, -84.4200] },
+        { name: "Sugarcoat Phipps Plaza", coords: [33.8490, -84.3620] },
+        { name: "Sugarcoat Sandy Springs", coords: [33.9400, -84.3780] },
+        { name: "Sugarcoat The Forum", coords: [33.9700, -84.2200] },
 
-        { name: "Brash The Works", brand: "Brash", coords: [33.8000, -84.4280] },
-        { name: "Brash Westside Provisions", brand: "Brash", coords: [33.7860, -84.4110] },
-        { name: "Brash Atlanta History Center", brand: "Brash", coords: [33.8420, -84.3850] },
-        { name: "Brash Beltline", brand: "Brash", coords: [33.7550, -84.3680] },
+        // Brash
+        { name: "Brash The Works", coords: [33.8000, -84.4280] },
+        { name: "Brash Westside Provisions", coords: [33.7860, -84.4110] },
+        { name: "Brash Atlanta History Center", coords: [33.8420, -84.3850] },
+        { name: "Brash Beltline", coords: [33.7550, -84.3680] },
 
-        { name: "PERC Chastain Park", brand: "PERC", coords: [33.8840, -84.3790] },
-        { name: "PERC Tucker", brand: "PERC", coords: [33.8529, -84.2145] },
+        // PERC
+        { name: "PERC Chastain Park", coords: [33.8840, -84.3790] },
+        { name: "PERC Tucker", coords: [33.8529, -84.2145] },
 
-        { name: "JINYA Buckhead", brand: "JINYA", coords: [33.8496, -84.3795] },
-        { name: "JINYA Poncey-Highland", brand: "JINYA", coords: [33.7739, -84.3525] },
-        { name: "JINYA Sandy Springs", brand: "JINYA", coords: [33.9206, -84.3783] },
-        { name: "JINYA Kennesaw", brand: "JINYA", coords: [34.0105, -84.5862] },
-        { name: "JINYA Roswell", brand: "JINYA", coords: [34.0232, -84.3616] },
-        { name: "JINYA Alpharetta", brand: "JINYA", coords: [34.0754, -84.2941] }
+        // JINYA
+        { name: "JINYA Buckhead", coords: [33.8496, -84.3795] },
+        { name: "JINYA Poncey-Highland", coords: [33.7739, -84.3525] },
+        { name: "JINYA Sandy Springs", coords: [33.9206, -84.3783] },
+        { name: "JINYA Kennesaw", coords: [34.0105, -84.5862] },
+        { name: "JINYA Roswell", coords: [34.0232, -84.3616] },
+        { name: "JINYA Alpharetta", coords: [34.0754, -84.2941] }
       ];
 
       const markerGroup = L.layerGroup().addTo(map);
-      const labelMarkers = [];
 
       locations.forEach(loc => {
-        const color = brandColors[loc.brand] || "#999999";
-        const marker = L.marker(loc.coords, { icon: createPinIcon(color) });
+        const marker = L.marker(loc.coords, { icon: createPinIcon(pinColor) });
         markerGroup.addLayer(marker);
-
-        const label = L.marker(loc.coords, {
-          icon: L.divIcon({
-            className: '',
-            html: `<div class="custom-label" style="transform: translate(20px, -35px);">${loc.name}</div>`,
-            iconAnchor: [0, 0],
-            iconSize: null
-          }),
-          interactive: false,
-          keyboard: false
-        });
-
-        labelMarkers.push(label);
       });
-
-      function updateLabels() {
-        const zoom = map.getZoom();
-        labelMarkers.forEach(label => {
-          if (zoom >= 13) {
-            if (!markerGroup.hasLayer(label)) markerGroup.addLayer(label);
-          } else {
-            if (markerGroup.hasLayer(label)) markerGroup.removeLayer(label);
-          }
-        });
-      }
-
-      updateLabels();
-      map.on("zoomend", updateLabels);
     </script>
   </body>
 </html>
-
-
