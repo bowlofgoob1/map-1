@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Homegrown Map - Responsive + All Locations</title>
+    <title>Homegrown Map - Final Version</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -41,8 +41,8 @@
         zoomDelta: 0.5,
         wheelPxPerZoomLevel: 60
       }).fitBounds([
-        [32.70, -105.0],
-        [39.80, -84.0]
+        [32.70, -105.0],  // bottom-left (Charleston)
+        [39.80, -84.0]    // top-right (Kansas City)
       ]);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -116,7 +116,7 @@
         { name: "Unknown Kansas City", coords: [39.0910, -94.5784] },
         { name: "Unknown Denver", coords: [39.7696, -105.0121] },
         { name: "Unknown Birmingham", coords: [33.5147, -86.7752] },
-        { name: "Unknown Charleston", coords: [32.7765, -79.9311] }
+        { name: "Unknown Charleston", coords: [32.8016, -79.9510] }
       ];
 
       const markerGroup = L.layerGroup().addTo(map);
@@ -128,3 +128,4 @@
     </script>
   </body>
 </html>
+
